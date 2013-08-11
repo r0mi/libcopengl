@@ -1,0 +1,4 @@
+build/
+c_copengl.pxd
+copengl.c
+copengl.pyx
