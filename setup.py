@@ -1,103 +1,39 @@
-
-#
-# NB! for now, use the pyrex version (USE_PYREX = 1), because the binary
-# generated under macosx by cython is ~1MB, and by pyrex it's ~500kB.
-#
-
-#
-# python setup.py build
-#
-#
-# macosx:
-#
-#   to prevent errors like this:
-#
-#     /usr/libexec/gcc/powerpc-apple-darwin10/4.0.1/as: assembler (/usr/bin/../libexec/gcc/darwin/ppc/as or /usr/bin/../local/libexec/gcc/darwin/ppc/as) for architecture ppc not installed
-#     Installed assemblers are:
-#     /usr/bin/../libexec/gcc/darwin/x86_64/as for architecture x86_64
-#     /usr/bin/../libexec/gcc/darwin/i386/as for architecture i386
-#
-#   disable ppc support:
-#
-#     export ARCHFLAGS="-arch i386 -arch x86_64"; python setup.py build
-#
-# random note: python setup.py build > log.txt 2>&1
-#              python setup.py build -c mingw32
-#
-
-USE_PYREX = 0
-
-if USE_PYREX:
-    print "using pyrex. unset USE_PYREX in setup.py to use cython"
-    from distutils.core import setup
-    from Pyrex.Distutils.extension import Extension
-    from Pyrex.Distutils import build_ext
-else:
-    print "using cython"
-    from distutils.core import setup
-    from distutils.extension import Extension
-    from Cython.Distutils import build_ext
-
-from commands import getstatusoutput
+from setuptools import setup, find_packages
 import sys
 
+extra_packages = []
 
-# disable creation of file "xxx-py2.6.egg-info"
-#from distutils.command.install import install
-#install.sub_commands = [('install_lib', install.has_lib)]
+#if sys.platform == "darwin":
+    #extra_packages = ["copengl/macosx/py27/copengl.so"] # no dice. the last dot gets converted to /
+# elif sys.platform == "win32" :
+# elif sys.platform == "linux2":
+# else:
+#     raise RuntimeError("platform %s not supported" % (sys.platform))
 
-libraries = []
-extra_compile_args = []
-extra_link_args = []
-
-if sys.platform == "darwin":
-    # negate the -g debugging flag that got always added in macosx by default
-    extra_compile_args = ["-g0"]
-    extra_link_args = ['-framework', 'OpenGL']
-elif sys.platform == "win32" :
-    libraries = ["OpenGL32"]
-elif sys.platform == "linux2":
-    extra_link_args = [getstatusoutput("pkg-config --cflags --libs gl")[1].strip()]
-else:
-    raise RuntimeError("platform %s not supported" % (sys.platform))
-
-
-ext_copengl = Extension(
-    "copengl",
-    language="c",
-    sources=["copengl.pyx"],
-    include_dirs=["src"],
-    library_dirs=[],
-    libraries=libraries,
-    #define_macros=[],
-    extra_link_args=extra_link_args,
-    extra_compile_args=extra_compile_args,
-    #depends=[],
-    )
+#print find_packages() # damn this doesn't find ANY of my prebuilt extensions..
 
 setup(
     name         = "copengl",
-    version      = "0.2.0",
+    version      = "1.0.0",
     license      = "MIT",
-    description  = "fast and limited opengl wrapper for python",
+    description  = "fast and limited legacy opengl wrapper for python",
     #long_description  = """ """,
-    keywords     = "",
-    author       = "",
-    author_email = "",
-    url          = "",
-    classifiers  = [],
-    ext_modules  = [ext_copengl],
-    cmdclass     = {'build_ext': build_ext}
+    keywords     = "opengl python wrapper",
+    #packages     = ["copengl"],
+    packages     = extra_packages + find_packages(),
+    author       = "Elmo Trolla",
+    author_email = "fdfdkz@gmail.com",
+    url          = "https://github.com/fdkz/libcopengl",
+    # https://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers  = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Topic :: Multimedia :: Graphics",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: Microsoft :: Windows",],
+    scripts=["copengl/__init__.py"],
     )
-
-
-# the setup.py "clean" command is not working completely for cython. we'll do it ourselves.
-
-if "clean" in sys.argv:
-    import os
-    import shutil
-    for p in ["copengl.c", "c_copengl.pxd", "copengl.pyx"]:
-        print "deleting", p
-        try:    os.remove(p)
-        except: pass
-    shutil.rmtree("build", True)

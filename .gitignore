@@ -1,4 +1,8 @@
+*.pyc
 build/
-c_copengl.pxd
-copengl.c
-copengl.pyx
+dist/
+*egg-info/
+modules_src/build/
+modules_src/c_copengl.pxd
+modules_src/copengl.c
+modules_src/copengl.pyx
