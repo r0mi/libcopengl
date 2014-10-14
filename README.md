@@ -34,16 +34,18 @@ There are three possibilities:
 
   * Copy `./copengl` to your own project.
   * `git clone` to your own project as a submodule and modify `sys.path` at program startup.
-  * ~~`python setup.py install`~~
+  * `python setup.py install`
 
 Note that the `./copengl` directory contains (if maintained..) binaries for
 all supported platforms (macosx universal, windows64, linux32/64). Enjoy the
 fact that your program will run on every platform by just being simply copied!
 
-The third `setup.py install` (and also `setup.py build`) method should someday
-copy only the platform-specific binary, but not yet. It doesn't do anything.
-Just add the ready-built ``copengl`` folder to your project and be done with
-it. Finding out how to fiddle with binary distributions and wheels, sporks,
+The third `setup.py install` (and also `setup.py build`) method will
+copy only the platform-specific binaries. Generating redistributable ``wheels``
+will do the same, but the metadata has no indication that the ``wheel`` is
+platform-specific.
+
+Finding out how to fiddle with binary distributions and wheels, sporks,
 eggs, hatchlings, pip, setuptools, distutils, .. good luck.
 
 

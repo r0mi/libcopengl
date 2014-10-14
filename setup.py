@@ -3,14 +3,18 @@ import sys
 
 extra_packages = []
 
-#if sys.platform == "darwin":
-    #extra_packages = ["copengl/macosx/py27/copengl.so"] # no dice. the last dot gets converted to /
-# elif sys.platform == "win32" :
-# elif sys.platform == "linux2":
-# else:
-#     raise RuntimeError("platform %s not supported" % (sys.platform))
+if sys.platform == "darwin":
+    extra_package_data = {"copengl": ["macosx/py27/copengl.so"]}
+elif sys.platform == "linux2":
+    extra_package_data = {"copengl": ["linux/py27_64/copengl.so", "linux/py27_32/copengl.so"]}
+elif sys.platform == "win32" :
+    extra_package_data = {"copengl": ["windows/copengl.dll"]}
+else:
+    raise RuntimeError("platform %s not supported" % (sys.platform))
 
-#print find_packages() # damn this doesn't find ANY of my prebuilt extensions..
+
+import distutils.util
+print(distutils.util.get_platform())
 
 setup(
     name         = "copengl",
@@ -20,7 +24,8 @@ setup(
     #long_description  = """ """,
     keywords     = "opengl python wrapper",
     #packages     = ["copengl"],
-    packages     = extra_packages + find_packages(),
+    packages     = find_packages(),
+    package_data = extra_package_data,
     author       = "Elmo Trolla",
     author_email = "fdfdkz@gmail.com",
     url          = "https://github.com/fdkz/libcopengl",
@@ -35,5 +40,4 @@ setup(
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",],
-    scripts=["copengl/__init__.py"],
-    )
+)
