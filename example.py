@@ -1,6 +1,6 @@
 import logging
 logg = logging.getLogger(__name__)
-if __name__=="__main__":
+if __name__ == "__main__":
 	logging.basicConfig(level=logging.NOTSET, format="%(asctime)s %(name)s %(levelname)-5s: %(message)s")
 
 import sys
@@ -121,9 +121,9 @@ class Crawly:
 		self.v = 0.
 		self.acc = 0.
 		self.direction = 0.
-		self.leglen = 0.5*1.8*1.2
-		self.legs = [[0., 0.] for i in range(14)]
-		self.legs2 = [[0., 0.] for i in range(14)]
+		self.leglen = 0.5*1.5
+		self.legs = [[0., 0.] for i in range(10)]
+		self.legs2 = [[0., 0.] for i in range(10)]
 		self._place_legs()
 		self._place_legs2()
 
@@ -502,7 +502,7 @@ class Main:
 		glDisable(GL_LINE_STIPPLE)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
 	logg.info("")
 	logg.info("------------------------------------")
 	logg.info("usage: press arrows and x")
