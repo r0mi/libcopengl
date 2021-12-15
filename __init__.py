@@ -1,2 +1,2 @@
-from copengl import *
+from .copengl import *
 

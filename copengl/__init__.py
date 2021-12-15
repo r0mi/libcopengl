@@ -1,3 +1,3 @@
-from copengl import *
-from copenglconstants import *
+from .copengl import *
+from .copenglconstants import *
 

@@ -1,10 +1,5 @@
 
 #
-# NB! for now, use the pyrex version (USE_PYREX = 1), because the binary
-# generated under macosx by cython is ~1MB, and by pyrex it's ~500kB.
-#
-
-#
 # python setup.py build
 #
 #
@@ -25,20 +20,11 @@
 #              python setup.py build -c mingw32
 #
 
-USE_PYREX = 1
+from distutils.core import setup
+from distutils.extension import Extension
+from Cython.Distutils import build_ext
 
-if USE_PYREX:
-    print "using pyrex. unset USE_PYREX in setup.py to use cython"
-    from distutils.core import setup
-    from Pyrex.Distutils.extension import Extension
-    from Pyrex.Distutils import build_ext
-else:
-    print "using cython"
-    from distutils.core import setup
-    from distutils.extension import Extension
-    from Cython.Distutils import build_ext
-
-from commands import getstatusoutput
+from subprocess import getstatusoutput
 import sys
 
 
@@ -56,10 +42,10 @@ if sys.platform == "darwin":
     extra_link_args = ['-framework', 'OpenGL']
 elif sys.platform == "win32" :
     libraries = ["OpenGL32"]
-elif sys.platform == "linux2":
+elif sys.platform == "linux":
     extra_link_args = [getstatusoutput("pkg-config --cflags --libs gl")[1].strip()]
 else:
-    raise RuntimeError("platform %s not supported" % (sys.platform))
+    raise RuntimeError(f"platform {sys.platform} not supported")
 
 
 ext_copengl = Extension(
@@ -97,7 +83,7 @@ if "clean" in sys.argv:
     import os
     import shutil
     for p in ["copengl.c", "c_copengl.pxd", "copengl.pyx"]:
-        print "deleting", p
+        print("deleting", p)
         try:    os.remove(p)
         except: pass
     shutil.rmtree("build", True)

@@ -4,13 +4,13 @@ import sys
 extra_packages = []
 
 if sys.platform == "darwin":
-    extra_package_data = {"copengl": ["macosx/py27/copengl.so"]}
-elif sys.platform == "linux2":
-    extra_package_data = {"copengl": ["linux/py27_64/copengl.so", "linux/py27_32/copengl.so"]}
+    extra_package_data = {"copengl": ["macosx/py3/copengl.so"]}
+elif sys.platform == "linux":
+    extra_package_data = {"copengl": ["linux/py3_64/copengl.so", "linux/py3_32/copengl.so"]}
 elif sys.platform == "win32" :
     extra_package_data = {"copengl": ["windows/copengl.dll"]}
 else:
-    raise RuntimeError("platform %s not supported" % (sys.platform))
+    raise RuntimeError(f"platform {sys.platform} not supported")
 
 
 import distutils.util

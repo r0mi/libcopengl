@@ -244,7 +244,8 @@ class Crawly:
 
 
 class Circle:
-	def __init__(self, x, y, r, (red, g, b, a)):
+	def __init__(self, x, y, r, xxx_todo_changeme):
+		(red, g, b, a) = xxx_todo_changeme
 		self.x, self.y, self.r = x, y, r
 		self.red, self.g, self.b, self.a = red, g, b, a
 
@@ -371,7 +372,7 @@ class CrawlyWorld:
 		# avoid the shapes
 
 		if True:
-			 for c in self.crawlys:
+			for c in self.crawlys:
 				for circ in self.circles:
 					dist = math.hypot(c.x - circ.x, c.y - circ.y)
 					if dist < c.influence_radius * c.influence_radius:
@@ -391,7 +392,7 @@ class CrawlyWorld:
 			e.tick(dt)
 
 	def render(self, window_w, window_h):
-		glClearColor(0.8,0.8,1.8,1.0)
+		glClearColor(0.8, 0.8, 1.8, 1.0)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 		#glColor(1,0,0,1)
 

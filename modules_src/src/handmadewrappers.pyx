@@ -16,7 +16,7 @@ def glEnd():
 def glTexImage1D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, pixels):
     cdef char* c_pixels
     c_pixels = pixels
-    c_copengl.glTexImage21(target, level, internalformat, width, border, format, type, c_pixels)
+    c_copengl.glTexImage1D(target, level, internalformat, width, border, format, type, c_pixels)
     if _GET_GL_ERROR: _CheckError()
 
 def glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, pixels):
