@@ -426,14 +426,14 @@ class Main:
 
 	def run(self):
 		if SDL_Init(SDL_INIT_VIDEO) != 0:
-			logg.error(SDL_GetError())
+			logg.error(SDL_GetError().decode('utf-8'))
 			return -1
 
 		window = SDL_CreateWindow(b"copengl example", SDL_WINDOWPOS_UNDEFINED,
 								  SDL_WINDOWPOS_UNDEFINED, self.w, self.h,
-								  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE)
+								  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)
 		if not window:
-			logg.error(SDL_GetError())
+			logg.error(SDL_GetError().decode('utf-8'))
 			return -1
 
 		context = SDL_GL_CreateContext(window)
@@ -442,10 +442,18 @@ class Main:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
 		if SDL_GL_SetSwapInterval(-1): # 0 to disable vsync
-			logg.error(SDL_GetError())
+			logg.error(SDL_GetError().decode('utf-8'))
 			if SDL_GL_SetSwapInterval(1):
-				logg.error("SDL_GL_SetSwapInterval: %s", SDL_GetError())
+				logg.error(f"SDL_GL_SetSwapInterval: {SDL_GetError().decode('utf-8')}")
 				logg.error("vsync failed completely. will munch cpu for lunch.")
+
+		#Drawable size
+		drawable_w = ctypes.c_int()
+		drawable_h = ctypes.c_int()
+
+		SDL_GL_GetDrawableSize(window, ctypes.byref(drawable_w), ctypes.byref(drawable_h))
+		self.d_w = drawable_w.value
+		self.d_h = drawable_h.value
 
 		self.keys = SDL_GetKeyboardState(None)
 		self._init_gl()
@@ -468,6 +476,8 @@ class Main:
 				if event.type == SDL_WINDOWEVENT:
 					if event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED:
 						self.w, self.h = event.window.data1, event.window.data2
+						SDL_GL_GetDrawableSize(window, ctypes.byref(drawable_w), ctypes.byref(drawable_h))
+						self.d_w, self.d_h = drawable_w.value, drawable_h.value
 
 			t = time.time()
 			self._render_frame(t - last_t)
@@ -481,13 +491,13 @@ class Main:
 
 	def _render_frame(self, dt):
 		self.fpscounter.tick(dt)
-		glViewport(0, 0, self.w, self.h)
+		glViewport(0, 0, self.d_w, self.d_h)
 		self.crawlyworld.tick(dt, self.keys)
 		self.crawlyworld.render(self.w, self.h)
 
 		t = time.time()
 		if self.fps_log_time + 2 < t:
-			logg.info("fps: %i", self.fpscounter.fps)
+			logg.info(f"fps: {self.fpscounter.fps:.0f}")
 			self.fps_log_time = t
 
 	def _init_gl(self):
